@@ -20,7 +20,11 @@ def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> N
     try:
         sample_data = get_input_file_lines(f"{partial_path}/sample/{filename}")
     except FileNotFoundError:
-        print(f"No sample file found for year ({year}) and date ({date}). Exiting.")
+        print(f"ERROR: No sample file found for year ({year}) and date ({date}). Exiting.")
+        sys.exit(1)
+
+    if not sample_data:
+        print("ERROR: Sample data is empty. Check the file. Exiting.")
         sys.exit(1)
 
     func(sample_data)
@@ -31,7 +35,7 @@ def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> N
     try:
         real_data = get_input_file_lines(f"{partial_path}/real/{filename}")
     except FileNotFoundError:
-        print("File with real data missing. Create the missing file with the data.")
+        print("ERROR: File with real data missing. Create the missing file with the data.")
 
         init_file = advent_of_code.__file__
         package_path = Path(init_file).parent
@@ -41,7 +45,7 @@ def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> N
         sys.exit(1)
 
     if not real_data:
-        print("Real data is empty. Check the file.")
+        print("ERROR: Real data is empty. Check the file. Exiting.")
         sys.exit(1)
 
     func(real_data)
