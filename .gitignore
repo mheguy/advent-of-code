@@ -1,8 +1,6 @@
 # Project-specific
 .env
-gooey_examples/
-jetbrains/
-.idea/
+**/real/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

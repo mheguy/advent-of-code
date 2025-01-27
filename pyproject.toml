@@ -161,7 +161,7 @@ split-on-trailing-comma = false
 # Rules for init files:
 "__init__.py" = ["D10"]
 # Project-specific rules:
-"**/2022/**" = ["INP001"]
+"**/tools/**" = ["INP001"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

@@ -3,10 +3,14 @@ from __future__ import annotations
 import math
 import operator
 import re
-from collections.abc import Callable
 from dataclasses import dataclass
+from itertools import groupby
+from typing import TYPE_CHECKING
 
 from advent_of_code.shared.utils import run_solution
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 Item = int
 
@@ -32,11 +36,11 @@ class Game:
 
     def play_monkey_turn(self, monkey: Monkey) -> None:
         for item in monkey.items:
-            item = monkey.inspect(item)
-            item = item // self.worry_reduction
-            item = item % self.common_divisor
-            recipient = monkey.test(item)
-            self.monkeys[recipient].items.append(item)
+            inner_item = monkey.inspect(item)
+            inner_item = inner_item // self.worry_reduction
+            inner_item = inner_item % self.common_divisor
+            recipient = monkey.test(inner_item)
+            self.monkeys[recipient].items.append(inner_item)
         monkey.items.clear()
 
     def play_round(self) -> None:
@@ -50,9 +54,8 @@ class Game:
 
 
 class Monkey:
-    def __init__(self, monkey_block: str) -> None:
+    def __init__(self, lines: list[str]) -> None:
         self.inspection_count: int = 0
-        lines = monkey_block.split("\n")
 
         current_str, *lines = lines
         self.id = int(re.findall(r"\d+", current_str)[0])
@@ -87,19 +90,19 @@ class Monkey:
         return self.false_monkey
 
 
-def parse_input(text: str) -> dict[int, Monkey]:
-    monkey_blocks = text.split("\n\n")
+def parse_input(lines: list[str]) -> dict[int, Monkey]:
+    monkey_blocks = [list(v) for k, v in groupby(lines, bool) if k]
+
     return {monkey_id: (Monkey(monkey_block)) for monkey_id, monkey_block in enumerate(monkey_blocks)}
 
 
 def main(lines: list[str]) -> None:
     for worry_reduction, rounds in (3, 20), (1, 10_000):
-        game = Game(parse_input(get_input_file_text()), worry_reduction)
+        game = Game(parse_input(lines), worry_reduction)
         game.play_rounds(rounds)
         inspections = sorted([monkey.inspection_count for monkey in game.monkeys.values()])
         solution = math.prod(inspections[-2:])
         print(f"After {rounds} rounds, the monkey business value is {solution}.")
-        assert solution in [10_605, 76_728, 2_713_310_158, 21_553_910_156]
 
 
 if __name__ == "__main__":

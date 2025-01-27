@@ -40,6 +40,10 @@ def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> N
 
         sys.exit(1)
 
+    if not real_data:
+        print("Real data is empty. Check the file.")
+        sys.exit(1)
+
     func(real_data)
 
     print("Real completed.")
@@ -50,4 +54,8 @@ def get_input_file_lines(file_path: str) -> list[str]:
 
     input_text = file.read()
     lines = input_text.split("\n")
-    return [line for line in lines if line]
+
+    if not lines[-1]:
+        lines.pop()
+
+    return lines

@@ -1,18 +1,6 @@
+from itertools import groupby
+
 from advent_of_code.shared.utils import run_solution
-
-
-def get_elves() -> list[int]:
-    input_file = INPUT_FOLDER / "input"
-    input_text = input_file.read_text("UTF-8")
-    elves_as_text = input_text.split("\n\n")
-
-    elves = []
-    for elf_text in elves_as_text:
-        if not elf_text:
-            continue
-        calorie_values_as_text = elf_text.split("\n")
-        elves.append(sum(int(calorie_value_str) for calorie_value_str in calorie_values_as_text))
-    return elves
 
 
 def get_sum_of_top_n(nums: list[int], n: int) -> int:
@@ -26,9 +14,9 @@ def get_sum_of_top_n(nums: list[int], n: int) -> int:
 
 
 def main(lines: list[str]) -> None:
-    elven_calorie_counts = get_elves()
-    print(max(elven_calorie_counts))
-    print(get_sum_of_top_n(elven_calorie_counts, 3))
+    calorie_counts = [sum(map(int, group)) for key, group in groupby(lines, bool) if key]
+    print(max(calorie_counts))
+    print(get_sum_of_top_n(calorie_counts, 3))
 
 
 if __name__ == "__main__":
