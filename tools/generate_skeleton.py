@@ -1,8 +1,20 @@
 from pathlib import Path
+from string import Template
 
 import advent_of_code
 
-SOLUTION_TEMPLATE = """"""
+SOLUTION_TEMPLATE = Template(
+    """from advent_of_code.shared.utils import run_solution
+
+
+def main(lines: list[str]) -> None:
+    print(lines)
+
+
+if __name__ == "__main__":
+    run_solution("$year", "$date", main)
+"""
+)
 
 
 def create_files_for_day(year: int, day: int) -> None:
@@ -18,6 +30,8 @@ def create_files_for_day(year: int, day: int) -> None:
     real_input_folder.mkdir(parents=True, exist_ok=True)
     sample_input_folder.mkdir(parents=True, exist_ok=True)
 
+    (solutions_folder / "__init__.py").touch()
+
     date = f"dec_{day:02}"
     (real_input_folder / f"{date}.txt").touch()
     (sample_input_folder / f"{date}.txt").touch()
@@ -27,7 +41,8 @@ def create_files_for_day(year: int, day: int) -> None:
     if solution_file.exists():
         print("Solution file exists, will not overwrite.")
     else:
-        solution_file.write_text(SOLUTION_TEMPLATE)
+        solution_text = SOLUTION_TEMPLATE.substitute(year=year, date=date)
+        solution_file.write_text(solution_text)
 
 
 def process_day_input(day_input: str) -> list[int]:
