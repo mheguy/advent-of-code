@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
 
 FS_SPACE = 70000000
 SPACE_NEEDED = 30000000
@@ -62,7 +62,7 @@ class Terminal:
             self.chdir(name.removeprefix("cd "))
 
     def chdir(self, target: str) -> None:
-        if target == "..":
+        if target == ".." and self.cwd.parent:
             self.cwd = self.cwd.parent
         elif target == "/":
             self.cwd = self.root
@@ -76,6 +76,9 @@ class Terminal:
                 self.cwd.add_folder(name, Folder(name, self.cwd))
             else:
                 result = re.search(r"(\d+) (.+)", line)
+                if not result:
+                    raise ValueError
+
                 self.cwd.add_file(File(result[2], int(result[1])))
 
 
@@ -114,7 +117,7 @@ def get_puzzle_answer(folders: list[Folder]) -> int:
     total = 0
     for folder in folders:
         print(f"{folder.name} - {folder.size}")
-        if folder.size <= 100000:
+        if folder.size <= 100000:  # noqa: PLR2004
             total += folder.size
     return total
 
@@ -133,9 +136,8 @@ def get_smallest_viable_folder(folders: list[Folder], minimum_size: int) -> Fold
     )
 
 
-def main():
-    text_lines = get_input_file_lines()
-    command_blocks = parse_text_input(text_lines)
+def main(lines: list[str]) -> None:
+    command_blocks = parse_text_input(lines)
     terminal = Terminal()
 
     for command_block in command_blocks:
@@ -150,4 +152,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_07", main)

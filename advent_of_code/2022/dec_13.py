@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 PACKET_PAIR = 0
 
@@ -17,7 +19,7 @@ PacketDataType = int | list["PacketDataType"]
 class Packet:
     data: list[PacketDataType]
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: Any) -> bool:
         if not isinstance(other, Packet):
             raise NotImplementedError
         return self.compare_packets(other)
@@ -26,7 +28,7 @@ class Packet:
         calc = PacketCalculator()
         result = calc.compare_lists(self.data, other.data)
 
-        return result.value
+        return bool(result.value)
 
 
 class Result(Enum):
@@ -43,7 +45,7 @@ class PacketCalculator:
             return Result.WRONG
         return Result.NO_RESULT
 
-    def compare_lists(self, left_list: list, right_list: list) -> Result:
+    def compare_lists(self, left_list: list[Any], right_list: list[Any]) -> Result:
         for left, right in zip(left_list, right_list, strict=False):
             comparison_function = self.get_comparison_method_from_types(type(left), type(right))
 
@@ -70,19 +72,18 @@ class PacketCalculator:
 
         return self.compare_lists(left, right)
 
-    def get_comparison_method_from_types(self, l: type, r: type) -> Callable[[Any, Any], Result]:
+    def get_comparison_method_from_types(self, left: type, right: type) -> Callable[[Any, Any], Result]:
         """Get the correct method based on the types."""
-        if l is int and r is int:
+        if left is int and right is int:
             return self.compare_integers
 
-        if l is list and r is list:
+        if left is list and right is list:
             return self.compare_lists
 
         return self.compare_mixed
 
 
-def main() -> None:
-    lines = get_input_file_lines()
+def main(lines: list[str]) -> None:
     left_packets = list(map(Packet, map(json.loads, lines[0::2])))
     right_packets = list(map(Packet, map(json.loads, lines[1::2])))
     packet_score = sum(
@@ -103,4 +104,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_13", main)

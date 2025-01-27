@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import math
 from collections import deque
-from collections.abc import Generator
 from dataclasses import dataclass, field
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 CARDINAL_MOVEMENTS = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
@@ -126,8 +128,8 @@ class Hiker:
         return set(possible_paths) - self.positions_visited
 
 
-def main() -> None:
-    heightmap = HeightMap(get_input_file_lines())
+def main(lines: list[str]) -> None:
+    heightmap = HeightMap(lines)
     hiker = Hiker(heightmap.starting_position, heightmap)
 
     steps_from_fixed_start = hiker.explore_paths()
@@ -142,4 +144,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_12", main)

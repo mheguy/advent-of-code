@@ -1,8 +1,8 @@
 from enum import IntEnum
 
-from advent_of_code.dec_2.part_1 import Choice, defeat_map
-from advent_of_code.dec_2.part_1 import decryption_map as p1_decryption_map
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.2022.dec_02_1 import Choice, defeat_map
+from advent_of_code.2022.dec_02_1 import decryption_map as p1_decryption_map
+from advent_of_code.shared.utils import get_input_file_lines, run_solution
 
 
 class Outcome(IntEnum):
@@ -19,7 +19,7 @@ decryption_map["Y"] = Outcome.Draw
 decryption_map["Z"] = Outcome.Win
 
 
-def main():
+def main(lines: list[str]) -> None:
     rps_rounds = get_input_file_lines()
 
     # test_rounds = ["A Y", "B X", "C Z"]
@@ -55,4 +55,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_02", main)

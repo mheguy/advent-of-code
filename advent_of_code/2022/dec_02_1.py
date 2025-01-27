@@ -2,7 +2,7 @@
 
 from enum import IntEnum
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import get_input_file_lines, run_solution
 
 
 class Choice(IntEnum):
@@ -32,7 +32,7 @@ for choice, char_list in reverse_decryption_map.items():
         decryption_map[char] = choice
 
 
-def main():
+def main(lines: list[str]) -> None:
     rps_rounds = get_input_file_lines()
 
     total_score = 0
@@ -56,4 +56,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_02", main)

@@ -1,7 +1,8 @@
 import itertools
 import string
+from typing import Any
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
 
 
 def get_priority_map() -> dict[str, int]:
@@ -24,7 +25,7 @@ def create_groups_of_n(list_to_split: list[str], group_size: int) -> list[list[s
 
 
 def find_badge(group: list[str]) -> str:
-    possible_badges: dict[int, set] = {
+    possible_badges: dict[int, set[Any]] = {
         member_number: {item for item in member_backpack if item in group[-1]}
         for member_number, member_backpack in enumerate(group[:-1])
     }
@@ -37,12 +38,11 @@ def find_badge(group: list[str]) -> str:
     raise ValueError
 
 
-def main() -> None:
+def main(lines: list[str]) -> None:
     priority_map = get_priority_map()
-    lines = get_input_file_lines()
 
     total = 0
-    for line_num, line in enumerate(lines, start=1):
+    for line in lines:
         midpoint = len(line) // 2
         left = line[:midpoint]
         right = line[midpoint:]
@@ -51,22 +51,17 @@ def main() -> None:
                 total += priority_map[char]
                 break
 
-        # print(f"{line_num=} - {total=}")
-        line_num += 1
-
     print(total)
 
     groups_of_3 = create_groups_of_n(lines, 3)
 
     total = 0
-    for group_num, group in enumerate(groups_of_3, start=1):
+    for group in groups_of_3:
         badge = find_badge(group)
         total += priority_map[badge]
-        # print(f"{group_num=} - {badge=} - {total=}")
-        group_num += 1
 
     print(total)
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_03", main)

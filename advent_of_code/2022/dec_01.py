@@ -1,4 +1,4 @@
-from advent_of_code.shared.resources import INPUT_FOLDER
+from advent_of_code.shared.utils import run_solution
 
 
 def get_elves() -> list[int]:
@@ -25,7 +25,11 @@ def get_sum_of_top_n(nums: list[int], n: int) -> int:
     return total
 
 
-if __name__ == "__main__":
+def main(lines: list[str]) -> None:
     elven_calorie_counts = get_elves()
     print(max(elven_calorie_counts))
     print(get_sum_of_top_n(elven_calorie_counts, 3))
+
+
+if __name__ == "__main__":
+    run_solution("2022", "dec_01", main)

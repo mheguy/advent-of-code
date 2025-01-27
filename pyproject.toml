@@ -98,7 +98,9 @@ ignore = [
     # Project-specific rules.
     "D",      # I won't be creating doc
     "FBT001", # boolean positional arg in function is practical for 2-part nature of challenges
+    "FBT002",
     "FBT003",
+    "S101",   # using assert is practical for debugging
 ]
 # Frustrating automatic fixes (ex. removing unused imports before you have a chance to use them)
 unfixable = ["B007", "E712", "F401", "F841"]

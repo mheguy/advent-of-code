@@ -6,7 +6,7 @@ import re
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from advent_of_code.shared.utils import get_input_file_text
+from advent_of_code.shared.utils import run_solution
 
 Item = int
 
@@ -92,7 +92,7 @@ def parse_input(text: str) -> dict[int, Monkey]:
     return {monkey_id: (Monkey(monkey_block)) for monkey_id, monkey_block in enumerate(monkey_blocks)}
 
 
-def main() -> None:
+def main(lines: list[str]) -> None:
     for worry_reduction, rounds in (3, 20), (1, 10_000):
         game = Game(parse_input(get_input_file_text()), worry_reduction)
         game.play_rounds(rounds)
@@ -103,4 +103,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_11", main)

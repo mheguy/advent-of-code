@@ -1,6 +1,6 @@
 from typing import NamedTuple
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
 
 
 class Position(NamedTuple):
@@ -8,17 +8,13 @@ class Position(NamedTuple):
     y: int
 
 
-def main(target_y_level: int, input_filename: str) -> None:
-    lines = get_input_file_lines(input_filename)
+def main(lines: list[str]) -> None:
     scanned_tiles_at_level = set()
     for line in lines:
         sensor, beacon = list(
             map(
                 eval,
-                map(
-                    lambda x: f"Position({x})",
-                    line.replace("Sensor at ", "").split(": closest beacon is at "),
-                ),
+                (f"Position({x})" for x in line.replace("Sensor at ", "").split(": closest beacon is at ")),
             )
         )
         radius = abs(sensor.x - beacon.x) + abs(sensor.y - beacon.y)
@@ -48,5 +44,4 @@ def main(target_y_level: int, input_filename: str) -> None:
 
 
 if __name__ == "__main__":
-    main(10, "dec_15_sample.txt")  # test data
-    main(2_000_000, "dec_15_real.txt")  # real data
+    run_solution("2022", "dec_15", main)

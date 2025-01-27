@@ -2,7 +2,7 @@ from enum import Enum
 from itertools import pairwise
 from typing import NamedTuple
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
 
 Grid = dict["Position", "Material"]
 
@@ -119,16 +119,14 @@ def drop_sand_grain(grid: Grid) -> Position | None:
     return None if pos == starting_pos else pos
 
 
-def main() -> None:
-    input_lines = get_input_file_lines()
-
-    grid = create_grid(input_lines)
+def main(lines: list[str]) -> None:
+    grid = create_grid(lines)
     grid = drop_sand_grains(grid)
     sand_grains = sum(material is Material.SAND for material in grid.values())
     print(f"{sand_grains} grains of sand are now in the grid (no floor).")
     assert sand_grains in [24, 817]
 
-    grid = create_grid(input_lines, True)
+    grid = create_grid(lines, True)
     grid = drop_sand_grains(grid)
     sand_grains = sum(material is Material.SAND for material in grid.values()) + 1
     print(f"{sand_grains} grains of sand are now in the grid (with floor).")
@@ -136,4 +134,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_14", main)

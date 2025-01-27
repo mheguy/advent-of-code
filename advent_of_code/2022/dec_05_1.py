@@ -1,6 +1,6 @@
 import re
 
-from advent_of_code.shared.utils import get_input_file_text
+from advent_of_code.shared.utils import get_input_file_text, run_solution
 
 CrateStack = list[str]
 
@@ -30,7 +30,7 @@ def process_instruction_line(columns, line):
         columns[destination].append(columns[origin].pop())
 
 
-def main():
+def main(lines: list[str]) -> None:
     columns = initialize_columns()
     for line in instructions.split("\n"):
         process_instruction_line(columns, line)
@@ -40,4 +40,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_05", main)

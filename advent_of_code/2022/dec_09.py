@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
 
 
 class Coordinate(NamedTuple):
@@ -16,7 +16,7 @@ class Knot:
     number: int
     x: int
     y: int
-    location_tracker: set = field(default_factory=set)
+    location_tracker: set[Any] = field(default_factory=set)
 
     def __post_init__(self) -> None:
         self.location_tracker.add(Coordinate(0, 0))
@@ -31,7 +31,7 @@ class Knot:
         x_diff = head.x - self.x
         y_diff = head.y - self.y
 
-        if abs(x_diff) < 2 and abs(y_diff) < 2:
+        if abs(x_diff) < 2 and abs(y_diff) < 2:  # noqa: PLR2004
             return
 
         x_movement: int = 0
@@ -83,7 +83,7 @@ class Rope:
                 print(f"{knot.number}: ({knot.x},{knot.y})")
 
 
-def main(num_knots: int):
+def solve(lines: list[str], num_knots: int) -> None:
     directions = {
         "U": Coordinate(0, 1),
         "D": Coordinate(0, -1),
@@ -91,7 +91,6 @@ def main(num_knots: int):
         "L": Coordinate(-1, 0),
     }
 
-    lines = get_input_file_lines()
     knot = Rope(num_knots)
     for line in lines:
         direction, dist_str = line.split()
@@ -100,6 +99,10 @@ def main(num_knots: int):
     print(f"For {num_knots}, the last piece visited {len(knot.tail.location_tracker)} locations.")
 
 
-if __name__ == "__main__":
+def main(lines: list[str]) -> None:
     for value in [2, 10]:
-        main(value)
+        solve(lines, value)
+
+
+if __name__ == "__main__":
+    run_solution("2022", "dec_09", main)

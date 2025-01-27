@@ -1,10 +1,8 @@
 # Find if set is completely contained in other
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
 
 
-def main() -> None:
-    lines = get_input_file_lines()
-
+def main(lines: list[str]) -> None:
     full_overlap = 0
     for line in lines:
         elves = line.split(",")
@@ -33,4 +31,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_solution("2022", "dec_04", main)

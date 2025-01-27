@@ -2,6 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 
 from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import run_solution
 
 
 class Display:
@@ -46,6 +47,7 @@ class CPU:
             self.register += int(value_str)
 
 
+def main(lines: list[str]) -> None:
 def main():
     cpu = CPU(Display())
     for line in get_input_file_lines():
@@ -58,4 +60,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    run_solution("2022", "dec_10", main)

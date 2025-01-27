@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from advent_of_code.shared.utils import get_input_file_lines
+from advent_of_code.shared.utils import get_input_file_lines, run_solution
 
 TreeGrid: list[list[Tree]]
 
@@ -76,7 +76,7 @@ def get_list_from_tree_grid(tree_grid: TreeGrid) -> list[Tree]:
     return tree_list
 
 
-def main():
+def main(lines: list[str]) -> None:
     lines = get_input_file_lines()
     tree_grid = [[Tree(int(char)) for char in line] for line in lines]
     process_visibility(tree_grid)
@@ -89,4 +89,5 @@ def main():
 
 
 if __name__ == "__main__":
+    run_solution("2022", "dec_08", main)
     main()

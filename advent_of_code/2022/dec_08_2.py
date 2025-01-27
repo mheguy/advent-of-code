@@ -47,7 +47,7 @@ def process_view_distances(tree_grid: TreeGrid) -> None:
         process_row_view_distances(list(reversed(col)))
 
 
-def main():
+def main(lines: list[str]) -> None:
     lines = get_input_file_lines()
     tree_grid = [[Tree(int(char)) for char in line] for line in lines]
     process_view_distances(tree_grid)
@@ -60,4 +60,5 @@ def main():
 
 
 if __name__ == "__main__":
+    run_solution("2022", "dec_08", main)
     main()
