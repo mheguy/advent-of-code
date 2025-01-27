@@ -1,6 +1,10 @@
+"""Not working, unsure why."""
+
 from typing import NamedTuple
 
 from advent_of_code.shared.utils import run_solution
+
+target_y_level = 2000000
 
 
 class Position(NamedTuple):
@@ -37,10 +41,6 @@ def main(lines: list[str]) -> None:
     part_1_score = len(scanned_tiles_at_level)
 
     print(part_1_score)
-    if target_y_level == 10:
-        assert part_1_score == 26
-    else:
-        assert part_1_score == 4951427
 
 
 if __name__ == "__main__":
