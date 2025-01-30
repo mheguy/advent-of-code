@@ -2,6 +2,8 @@
 import http.client
 import os
 import re
+import subprocess
+import sys
 import urllib.request
 from http.client import OK
 from pathlib import Path
@@ -21,6 +23,14 @@ if __name__ == "__main__":
     run_solution("$year", "$date", main)
 """
 )
+
+
+def open_file(filename: Path | str) -> None:
+    if sys.platform == "win32":
+        os.startfile(filename)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])  # noqa: S603
 
 
 def create_files_for_day(year: int, day: int) -> None:
@@ -60,6 +70,11 @@ def generate_solution_file(solutions_folder: Path, year: int, date: str) -> None
 
 def generate_example_input_file(sample_input_folder: Path, date: str, base_url: str) -> None:
     sample_input_file = sample_input_folder / f"{date}.txt"
+
+    if sample_input_file.exists() and sample_input_file.read_text():
+        print("Sample input file exists and is not empty. Will not overwrite.")
+        return
+
     sample_input_file.touch()
 
     with urllib.request.urlopen(base_url, timeout=5) as response:  # noqa: S310
@@ -69,7 +84,7 @@ def generate_example_input_file(sample_input_folder: Path, date: str, base_url: 
         response_text = response.read().decode()
 
         if response.status == OK:
-            match = re.search(r"example:[\s\S]+?<code>([\s\S]+?)</code>", response_text)
+            match = re.search(r"example.*?:[\s\S]+?<code>([\s\S]+?)</code>", response_text)
 
             if match is None:
                 print("WARNING: Could not find example input")
@@ -77,15 +92,20 @@ def generate_example_input_file(sample_input_folder: Path, date: str, base_url: 
                 sample_input_file.write_text(match.group(1))
         else:
             print(f"ERROR: Invalid response when trying to obtain example input. Code: {response.status}")
-            os.startfile(base_url)
-            os.startfile(sample_input_file)
+            open_file(base_url)
+            open_file(sample_input_file)
 
 
 def generate_real_input_file(real_input_folder: Path, date: str, base_url: str) -> None:
     real_input_file = real_input_folder / f"{date}.txt"
+
+    if real_input_file.exists() and real_input_file.read_text():
+        print("Real input file exists and is not empty. Will not overwrite.")
+        return
+
     real_input_file.touch()
-    os.startfile(real_input_file)
-    os.startfile(f"{base_url}/input")
+    open_file(real_input_file)
+    open_file(f"{base_url}/input")
 
 
 def process_day_input(day_input: str) -> list[int]:
