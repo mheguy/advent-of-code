@@ -14,8 +14,16 @@ import advent_of_code
 SOLUTION_TEMPLATE = Template(
     """from advent_of_code.shared.utils import run_solution
 
+Lines=list[str]
 
-def main(lines: list[str]) -> None:
+def main(lines: Lines) -> None:
+    print(part_1(lines))
+    print(part_2(lines))
+
+def part_1(lines: Lines) -> None:
+    print(lines)
+
+def part_2(lines: Lines) -> None:
     print(lines)
 
 
