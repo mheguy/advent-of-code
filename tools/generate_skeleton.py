@@ -20,11 +20,13 @@ def main(lines: Lines) -> None:
     print(part_1(lines))
     print(part_2(lines))
 
-def part_1(lines: Lines) -> None:
-    print(lines)
+def part_1(lines: Lines) -> int | str:
+    result = ""
+    return result
 
-def part_2(lines: Lines) -> None:
-    print(lines)
+def part_2(lines: Lines) -> int | str:
+    result = ""
+    return result
 
 
 if __name__ == "__main__":
