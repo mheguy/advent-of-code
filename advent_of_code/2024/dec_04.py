@@ -5,7 +5,6 @@ from advent_of_code.shared.utils import run_solution
 
 Lines = list[str]
 
-START_CHAR = "X"
 NEXT_CHAR = {"X": "M", "M": "A", "A": "S", "S": None}
 
 DIRECTIONS = (
@@ -18,6 +17,14 @@ DIRECTIONS = (
     (1, 0),
     (1, 1),
 )
+
+MAS_SET = {"M", "S"}
+
+
+@dataclass
+class Position:
+    row: int
+    col: int
 
 
 @dataclass
@@ -32,41 +39,33 @@ class Grid:
     def max_col(self) -> int:
         return len(self.lines[0]) - 1
 
+    def get_char(self, pos: Position) -> str | None:
+        if not self.in_grid(pos):
+            return None
 
-@dataclass
-class Position:
-    row: int
-    col: int
+        return self.lines[pos.row][pos.col]
 
-    def in_grid(self, grid: Grid) -> bool:
-        return bool(self.row >= 0 and self.row <= grid.max_row and self.col >= 0 and self.col <= grid.max_col)
-
-    def get_char(self, grid: Grid) -> str:
-        return grid.lines[self.row][self.col]
+    def in_grid(self, pos: Position) -> bool:
+        return bool(pos.row >= 0 and pos.row <= self.max_row and pos.col >= 0 and pos.col <= self.max_col)
 
 
 def main(lines: Lines) -> None:
-    print(part_1(lines))
-    # print(part_2(lines))
-
-
-def part_1(lines: Lines) -> int:
-    results = 0
-
     grid = Grid(lines)
+    p1_results = 0
+    p2_results = 0
 
-    for row, line in enumerate(lines):
+    for row, line in enumerate(grid.lines):
         for col, char in enumerate(line):
-            if char == START_CHAR:
-                results += search(grid, Position(row, col), char)
+            if char == "X":
+                p1_results += search_for_xmas(grid, Position(row, col))
+            if char == "A":
+                p2_results += search_for_x_mas(grid, Position(row, col))
 
-    return results
+    print(p1_results)
+    print(p2_results)
 
 
-def search(grid: Grid, pos: Position, char: str | None) -> int:
-    if char is None:
-        return 1
-
+def search_for_xmas(grid: Grid, pos: Position) -> int:
     results = 0
 
     for row_offset, col_offset in DIRECTIONS:
@@ -75,10 +74,7 @@ def search(grid: Grid, pos: Position, char: str | None) -> int:
         for next_char in "MAS":
             current_pos = Position(current_pos.row + row_offset, current_pos.col + col_offset)
 
-            if not current_pos.in_grid(grid):
-                break
-
-            if current_pos.get_char(grid) != next_char:
+            if grid.get_char(current_pos) != next_char:
                 break
         else:
             results += 1
@@ -86,8 +82,13 @@ def search(grid: Grid, pos: Position, char: str | None) -> int:
     return results
 
 
-def part_2(lines: Lines) -> None:
-    print(lines)
+def search_for_x_mas(grid: Grid, pos: Position) -> bool:
+    n_e = grid.get_char(Position(pos.row - 1, pos.col + 1))
+    n_w = grid.get_char(Position(pos.row - 1, pos.col - 1))
+    s_e = grid.get_char(Position(pos.row + 1, pos.col + 1))
+    s_w = grid.get_char(Position(pos.row + 1, pos.col - 1))
+
+    return bool({(n_e), (s_w)} == MAS_SET and {(n_w), (s_e)} == MAS_SET)
 
 
 if __name__ == "__main__":
