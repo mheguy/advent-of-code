@@ -23,7 +23,7 @@ def main(lines: Lines) -> None:
     bad_update_result = 0
 
     for update in updates:
-        if is_valid_udpate(rules, update):
+        if is_valid_update(rules, update):
             good_update_result += update[len(update) // 2]
         else:
             bad_update_result += get_bad_update_value(rules, update)
@@ -32,7 +32,7 @@ def main(lines: Lines) -> None:
     print(bad_update_result)
 
 
-def is_valid_udpate(rules: dict[int, list[int]], update: list[int]) -> bool:
+def is_valid_update(rules: dict[int, list[int]], update: list[int]) -> bool:
     for idx, num in enumerate(update):
         for earlier_num in rules[num]:
             if earlier_num in update[idx:]:
@@ -42,7 +42,25 @@ def is_valid_udpate(rules: dict[int, list[int]], update: list[int]) -> bool:
 
 
 def get_bad_update_value(rules: dict[int, list[int]], update: list[int]) -> int:
-    return 0
+    update = update.copy()
+
+    while not is_valid_update(rules, update):
+        update = fix_error_in_update(rules, update)
+
+    return update[len(update) // 2]
+
+
+def fix_error_in_update(rules: dict[int, list[int]], update: list[int]) -> list[int]:
+    fixed_update = update.copy()
+
+    for idx, num in enumerate(update):
+        for earlier_num in rules[num]:
+            if earlier_num in update[idx:]:
+                fixed_update.remove(earlier_num)
+                fixed_update.insert(idx, earlier_num)
+                return fixed_update
+
+    raise ValueError("Nothing to fix in update")
 
 
 if __name__ == "__main__":
