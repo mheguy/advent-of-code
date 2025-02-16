@@ -17,17 +17,10 @@ SOLUTION_TEMPLATE = Template(
 Lines=list[str]
 
 def main(lines: Lines) -> None:
-    print(part_1(lines))
-    print(part_2(lines))
+    print(get_result(lines))
 
-def part_1(lines: Lines) -> int | str:
-    result = ""
-    return result
-
-def part_2(lines: Lines) -> int | str:
-    result = ""
-    return result
-
+def get_result(lines: Lines) -> int | str:
+    return 0
 
 if __name__ == "__main__":
     run_solution("$year", "$date", main)
