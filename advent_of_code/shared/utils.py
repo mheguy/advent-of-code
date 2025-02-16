@@ -59,7 +59,11 @@ def get_input_file_lines(file_path: str) -> list[str]:
     input_text = file.read()
     lines = input_text.split("\n")
 
+    return trim_final_empty_lines(lines)
+
+
+def trim_final_empty_lines(lines: list[str]) -> list[str]:
     if not lines[-1]:
-        lines.pop()
+        return trim_final_empty_lines(lines[:-1])
 
     return lines
