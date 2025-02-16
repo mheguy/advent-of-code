@@ -1,31 +1,38 @@
 import itertools
 import operator
+from typing import TYPE_CHECKING
 
 from advent_of_code.shared.utils import run_solution
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 Lines = list[str]
 
 
 def main(lines: Lines) -> None:
-    print(part_1(lines))
+    print(get_result(lines, (operator.add, operator.mul)))
+    print(get_result(lines, (operator.add, operator.mul, concat_numbers)))
 
 
-def part_1(lines: Lines) -> int | str:
+def concat_numbers(left: int, right: int) -> int:
+    return int(f"{left}{right}")
+
+
+def get_result(lines: Lines, operators: tuple["Callable[[int, int], int]", ...]) -> int:
     result = 0
 
     for line in lines:
-        result += process_line(line)
+        result += process_line(line, operators)
 
     return result
 
 
-def process_line(line: str) -> int:
+def process_line(line: str, operators: tuple["Callable[[int, int], int]", ...]) -> int:
     total, others = line.split(": ")
     total = int(total)
 
     numbers = [int(num) for num in others.split(" ")]
-
-    operators = (operator.add, operator.mul)
 
     operator_combinations = list(itertools.product(operators, repeat=len(numbers) - 1))
 
