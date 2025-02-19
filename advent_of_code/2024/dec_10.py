@@ -18,24 +18,21 @@ MAX_HEIGHT = 9
 
 
 def main(lines: Lines) -> None:
-    print(get_result(lines))
-
-
-def get_result(lines: Lines) -> int | str:
     grid: dict[Position, int] = {}
     for row, line in enumerate(lines):
         for col, height in enumerate(line):
             grid[Position(col, row)] = int(height)
 
-    result = 0
+    summit_count = 0
+    trail_count = 0
     for pos, height in grid.items():
         if height != 0:
             continue
 
-        summits = get_summits_from_trailhead(grid, pos, 0)
-        result += len(summits)
+        summit_count += len(get_summits_from_trailhead(grid, pos, 0))
+        trail_count += len(get_trails_from_trailhead(grid, pos, 0))
 
-    return result
+    print(summit_count, trail_count)
 
 
 def get_summits_from_trailhead(grid: dict[Position, int], pos: Position, height: int) -> set[Position]:
@@ -53,6 +50,23 @@ def get_summits_from_trailhead(grid: dict[Position, int], pos: Position, height:
             summits.update(get_summits_from_trailhead(grid, next_step, cast(int, next_height)))
 
     return summits
+
+
+def get_trails_from_trailhead(grid: dict[Position, int], pos: Position, height: int) -> list[Position]:
+    if height == MAX_HEIGHT:
+        return [pos]
+
+    trails = []
+    target_height = height + 1
+
+    for direction in DIRECTIONS:
+        next_step = pos + direction.value
+        next_height = grid.get(next_step)
+
+        if next_height == target_height:
+            trails.extend(get_trails_from_trailhead(grid, next_step, cast(int, next_height)))
+
+    return trails
 
 
 if __name__ == "__main__":
