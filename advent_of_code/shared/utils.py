@@ -1,5 +1,6 @@
 import importlib.resources as pkg_resources
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -9,6 +10,21 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 INPUT_FOLDER = "input"
+
+
+@dataclass(frozen=True, slots=True)
+class Position:
+    x: int
+    y: int
+
+    def __str__(self) -> str:
+        return f"{self.x}, {self.y}"
+
+    def __add__(self, other: "Position") -> "Position":
+        return Position(self.x + other.x, self.y + other.y)
+
+    def __mul__(self, other: int) -> "Position":
+        return Position(self.x * other, self.y * other)
 
 
 def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> None:

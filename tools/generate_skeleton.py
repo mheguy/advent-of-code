@@ -14,16 +14,20 @@ import advent_of_code
 SOLUTION_TEMPLATE = Template(
     """from advent_of_code.shared.utils import run_solution
 
-Lines=list[str]
+Lines = list[str]
+
 
 def main(lines: Lines) -> None:
     print(get_result(lines))
 
+
 def get_result(lines: Lines) -> int | str:
     return 0
 
+
 if __name__ == "__main__":
     run_solution("$year", "$date", main)
+
 """
 )
 
@@ -87,12 +91,12 @@ def generate_example_input_file(sample_input_folder: Path, date: str, base_url: 
         response_text = response.read().decode()
 
         if response.status == OK:
-            match = re.search(r"example.*?:[\s\S]+?<code>([\s\S]+?)</code>", response_text)
+            matches = re.findall(r"example.*?:[\s\S]+?<code>([\s\S]+?)</code>", response_text)
 
-            if match is None:
+            if not matches:
                 print("WARNING: Could not find example input")
             else:
-                sample_input_file.write_text(match.group(1))
+                sample_input_file.write_text(matches[-1])
         else:
             print(f"ERROR: Invalid response when trying to obtain example input. Code: {response.status}")
             open_file(base_url)

@@ -3,28 +3,12 @@
 A better solution would be to add the objects while patrolling so that we only check each branch as needed.
 """
 
-from dataclasses import dataclass
 from enum import Enum
 from functools import cache
 
-from advent_of_code.shared.utils import run_solution
+from advent_of_code.shared.utils import Position, run_solution
 
 Lines = list[str]
-
-
-@dataclass(frozen=True)
-class Position:
-    x: int
-    y: int
-
-    def __str__(self) -> str:
-        return f"({self.x}, {self.y})"
-
-    def __add__(self, other: "Position|Direction") -> "Position":
-        if isinstance(other, Direction):
-            other = other.value
-
-        return Position(self.x + other.x, self.y + other.y)
 
 
 class Direction(Enum):
@@ -77,7 +61,7 @@ class Guard:
         self.visited_positions: set[Position] = set()
 
     def patrol(self, grid: Grid) -> bool:
-        target_position = self.pos + self.movement_direction
+        target_position = self.pos + self.movement_direction.value
 
         turns_without_new_positions = 0
 
@@ -101,7 +85,7 @@ class Guard:
             else:
                 self.pos = target_position
 
-            target_position = self.pos + self.movement_direction
+            target_position = self.pos + self.movement_direction.value
 
         return True
 

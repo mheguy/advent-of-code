@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from functools import cached_property
 
-from advent_of_code.shared.utils import run_solution
+from advent_of_code.shared.utils import Position, run_solution
 
 Lines = list[str]
 
@@ -22,12 +22,6 @@ MAS_SET = {"M", "S"}
 
 
 @dataclass
-class Position:
-    row: int
-    col: int
-
-
-@dataclass
 class Grid:
     lines: Lines
 
@@ -43,10 +37,10 @@ class Grid:
         if not self.in_grid(pos):
             return None
 
-        return self.lines[pos.row][pos.col]
+        return self.lines[pos.x][pos.y]
 
     def in_grid(self, pos: Position) -> bool:
-        return bool(pos.row >= 0 and pos.row <= self.max_row and pos.col >= 0 and pos.col <= self.max_col)
+        return bool(pos.x >= 0 and pos.x <= self.max_row and pos.y >= 0 and pos.y <= self.max_col)
 
 
 def main(lines: Lines) -> None:
@@ -72,7 +66,7 @@ def search_for_xmas(grid: Grid, pos: Position) -> int:
         current_pos = pos
 
         for next_char in "MAS":
-            current_pos = Position(current_pos.row + row_offset, current_pos.col + col_offset)
+            current_pos = Position(current_pos.x + row_offset, current_pos.y + col_offset)
 
             if grid.get_char(current_pos) != next_char:
                 break
@@ -83,10 +77,10 @@ def search_for_xmas(grid: Grid, pos: Position) -> int:
 
 
 def search_for_x_mas(grid: Grid, pos: Position) -> bool:
-    n_e = grid.get_char(Position(pos.row - 1, pos.col + 1))
-    n_w = grid.get_char(Position(pos.row - 1, pos.col - 1))
-    s_e = grid.get_char(Position(pos.row + 1, pos.col + 1))
-    s_w = grid.get_char(Position(pos.row + 1, pos.col - 1))
+    n_e = grid.get_char(Position(pos.x - 1, pos.y + 1))
+    n_w = grid.get_char(Position(pos.x - 1, pos.y - 1))
+    s_e = grid.get_char(Position(pos.x + 1, pos.y + 1))
+    s_w = grid.get_char(Position(pos.x + 1, pos.y - 1))
 
     return bool({(n_e), (s_w)} == MAS_SET and {(n_w), (s_e)} == MAS_SET)
 

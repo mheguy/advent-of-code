@@ -1,21 +1,9 @@
 import itertools
 from dataclasses import dataclass
 
-from advent_of_code.shared.utils import run_solution
+from advent_of_code.shared.utils import Position, run_solution
 
 Lines = list[str]
-
-
-@dataclass(frozen=True)
-class Position:
-    x: int
-    y: int
-
-    def __add__(self, other: "Position") -> "Position":
-        return Position(self.x + other.x, self.y + other.y)
-
-    def __mul__(self, other: int) -> "Position":
-        return Position(self.x * other, self.y * other)
 
 
 @dataclass(frozen=True)
