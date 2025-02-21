@@ -1,6 +1,7 @@
 import importlib.resources as pkg_resources
 import sys
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -20,11 +21,21 @@ class Position:
     def __str__(self) -> str:
         return f"{self.x}, {self.y}"
 
-    def __add__(self, other: "Position") -> "Position":
+    def __add__(self, other: "Position | Direction") -> "Position":
+        if isinstance(other, Direction):
+            other = other.value
+
         return Position(self.x + other.x, self.y + other.y)
 
     def __mul__(self, other: int) -> "Position":
         return Position(self.x * other, self.y * other)
+
+
+class Direction(Enum):
+    UP = Position(0, -1)
+    RIGHT = Position(1, 0)
+    DOWN = Position(0, 1)
+    LEFT = Position(-1, 0)
 
 
 def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> None:

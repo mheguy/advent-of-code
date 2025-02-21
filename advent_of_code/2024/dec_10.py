@@ -1,19 +1,11 @@
 from enum import Enum
 from typing import cast
 
-from advent_of_code.shared.utils import Position, run_solution
+from advent_of_code.shared.utils import Direction, Position, run_solution
 
 Lines = list[str]
 
 
-class Direction(Enum):
-    UP = Position(0, -1)
-    RIGHT = Position(1, 0)
-    DOWN = Position(0, 1)
-    LEFT = Position(-1, 0)
-
-
-DIRECTIONS = (Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT)
 MAX_HEIGHT = 9
 
 
@@ -42,7 +34,7 @@ def get_summits_from_trailhead(grid: dict[Position, int], pos: Position, height:
     summits = set()
     target_height = height + 1
 
-    for direction in DIRECTIONS:
+    for direction in Direction:
         next_step = pos + direction.value
         next_height = grid.get(next_step)
 
@@ -59,7 +51,7 @@ def get_trails_from_trailhead(grid: dict[Position, int], pos: Position, height: 
     trails = []
     target_height = height + 1
 
-    for direction in DIRECTIONS:
+    for direction in Direction:
         next_step = pos + direction.value
         next_height = grid.get(next_step)
 
