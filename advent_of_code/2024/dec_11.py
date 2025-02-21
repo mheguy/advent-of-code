@@ -1,33 +1,42 @@
+from collections import Counter
+
 from advent_of_code.shared.utils import run_solution
 
 Lines = list[str]
 
 
 def main(lines: Lines) -> None:
-    print(get_result(lines))
-
-
-def get_result(lines: Lines) -> int:
-    stones = [int(v) for v in lines[0].split()]
+    raw_stones = [int(v) for v in lines[0].split()]
+    stones = Counter(raw_stones)
 
     for _ in range(25):
         stones = blink(stones)
 
-    return len(stones)
+    print(sum(stones.values()))
+
+    for _ in range(50):
+        stones = blink(stones)
+
+    print(sum(stones.values()))
 
 
-def blink(stones: list[int]) -> list[int]:
-    new_stones: list[int] = []
-    for stone in stones:
+def blink(stones: Counter[int]) -> Counter[int]:
+    new_stones = Counter()
+
+    for stone, count in stones.items():
         if stone == 0:
-            new_stones.append(1)
-        elif len(str(stone)) % 2 == 0:
-            stone_text = str(stone)
-            midpoint = len(stone_text) // 2
-
-            new_stones.extend([int(stone_text[:midpoint]), int(stone_text[midpoint:])])
+            new_stones[1] += count
         else:
-            new_stones.append(stone * 2024)
+            stone_str = str(stone)
+            if len(stone_str) % 2 == 0:
+                midpoint = len(stone_str) // 2
+                first_half = int(stone_str[:midpoint])
+                second_half = int(stone_str[midpoint:])
+
+                new_stones[first_half] += count
+                new_stones[second_half] += count
+            else:
+                new_stones[stone * 2024] += count
 
     return new_stones
 
