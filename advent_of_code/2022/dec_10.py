@@ -1,7 +1,7 @@
 from collections import defaultdict
 from dataclasses import dataclass, field
+from typing import ClassVar
 
-from advent_of_code.shared.utils import get_input_file_lines
 from advent_of_code.shared.utils import run_solution
 
 
@@ -30,8 +30,8 @@ class CPU:
     display: Display
     cycle: int = 1
     register: int = 1
-    signals: list = field(default_factory=list)
-    cycle_count = {"noop": 1, "addx": 2}
+    signals: list[int] = field(default_factory=list)
+    cycle_count: ClassVar[dict[str, int]] = {"noop": 1, "addx": 2}
 
     def increment_cycle(self, cycles: int) -> None:
         for _ in range(cycles):
@@ -48,9 +48,8 @@ class CPU:
 
 
 def main(lines: list[str]) -> None:
-def main():
     cpu = CPU(Display())
-    for line in get_input_file_lines():
+    for line in lines:
         cpu.process_command(*line.split())
 
     print(sum(cpu.signals))
@@ -60,5 +59,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     run_solution("2022", "dec_10", main)
