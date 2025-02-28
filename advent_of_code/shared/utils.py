@@ -40,13 +40,17 @@ class Position:
 class DirectionInfo:
     as_position: Position
     axis: str
+    name: str
+
+    def __repr__(self) -> str:
+        return f"Info: {self.name}"
 
 
 class Direction(Enum):
-    UP = DirectionInfo(Position(0, -1), "y")
-    RIGHT = DirectionInfo(Position(1, 0), "x")
-    DOWN = DirectionInfo(Position(0, 1), "y")
-    LEFT = DirectionInfo(Position(-1, 0), "x")
+    UP = DirectionInfo(Position(0, -1), "y", "UP")
+    RIGHT = DirectionInfo(Position(1, 0), "x", "RIGHT")
+    DOWN = DirectionInfo(Position(0, 1), "y", "DOWN")
+    LEFT = DirectionInfo(Position(-1, 0), "x", "LEFT")
 
 
 def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> None:
