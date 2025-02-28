@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import cast
 
 from advent_of_code.shared.utils import Direction, Position, run_solution
@@ -35,7 +34,7 @@ def get_summits_from_trailhead(grid: dict[Position, int], pos: Position, height:
     target_height = height + 1
 
     for direction in Direction:
-        next_step = pos + direction.value
+        next_step = pos + direction
         next_height = grid.get(next_step)
 
         if next_height == target_height:
@@ -52,7 +51,7 @@ def get_trails_from_trailhead(grid: dict[Position, int], pos: Position, height: 
     target_height = height + 1
 
     for direction in Direction:
-        next_step = pos + direction.value
+        next_step = pos + direction
         next_height = grid.get(next_step)
 
         if next_height == target_height:

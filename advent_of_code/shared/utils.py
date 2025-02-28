@@ -21,9 +21,14 @@ class Position:
     def __str__(self) -> str:
         return f"{self.x}, {self.y}"
 
-    def __add__(self, other: "Position | Direction") -> "Position":
-        if isinstance(other, Direction):
-            other = other.value
+    def __add__(self, other: "Position | Direction | DirectionInfo") -> "Position":
+        match other:
+            case Direction():
+                other = other.value.as_position
+            case DirectionInfo():
+                other = other.as_position
+            case _:
+                pass
 
         return Position(self.x + other.x, self.y + other.y)
 
@@ -31,11 +36,17 @@ class Position:
         return Position(self.x * other, self.y * other)
 
 
+@dataclass(frozen=True, slots=True)
+class DirectionInfo:
+    as_position: Position
+    axis: str
+
+
 class Direction(Enum):
-    UP = Position(0, -1)
-    RIGHT = Position(1, 0)
-    DOWN = Position(0, 1)
-    LEFT = Position(-1, 0)
+    UP = DirectionInfo(Position(0, -1), "y")
+    RIGHT = DirectionInfo(Position(1, 0), "x")
+    DOWN = DirectionInfo(Position(0, 1), "y")
+    LEFT = DirectionInfo(Position(-1, 0), "x")
 
 
 def run_solution(year: str, date: str, func: "Callable[[list[str]], None]") -> None:
