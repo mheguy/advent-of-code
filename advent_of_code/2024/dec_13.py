@@ -15,10 +15,12 @@ def main(lines: Lines) -> None:
     machines = get_machines(lines)
 
     result_1 = 0
+    result_2 = 0
     for machine in machines:
         result_1 += process_machine(machine)
+        result_2 += process_machine(machine, 10000000000000)
 
-    print(result_1)
+    print(result_1, result_2)
 
 
 def get_machines(lines: Lines) -> list[tuple[Position, Position, Position]]:
@@ -34,30 +36,32 @@ def get_machines(lines: Lines) -> list[tuple[Position, Position, Position]]:
     return machines
 
 
-def process_machine(machine: tuple[Position, Position, Position]) -> int:
+def process_machine(machine: tuple[Position, Position, Position], prize_location_offset: int = 0) -> int:
     button_a, button_b, prize_location = machine
+    prize_location = Position(prize_location.x + prize_location_offset, prize_location.y + prize_location_offset)
 
-    # Let's work on X
-    max_number_of_a_pushes = prize_location.x // button_a.x
+    det = button_a.x * button_b.y - button_a.y * button_b.x
 
-    successful_x_combinations: list[tuple[int, int]] = []
-    for a_pushes in range(max_number_of_a_pushes, 0, -1):
-        remainder = prize_location.x - (a_pushes * button_a.x)
-
-        if remainder % button_b.x == 0:
-            successful_x_combinations.append((a_pushes, remainder // button_b.x))
-
-    if not successful_x_combinations:
+    if det == 0:
         return 0
 
-    # For Y, we could do the same thing and then check the sets of successful combinations for intersection
-    # But it's probably faster to simply check each successful x combination to see if it works
-    for successful_x_combination in successful_x_combinations:
-        a_pushes, b_pushes = successful_x_combination
-        total_y = (a_pushes * button_a.y) + (b_pushes * button_b.y)
+    a_numerator = prize_location.x * button_b.y - prize_location.y * button_b.x
+    b_numerator = button_a.x * prize_location.y - button_a.y * prize_location.x
 
-        if total_y == prize_location.y:
-            return (a_pushes * A_PUSH_COST) + (b_pushes * B_PUSH_COST)
+    if a_numerator % det != 0 or b_numerator % det != 0:
+        return 0
+
+    a_pushes = a_numerator // det
+    b_pushes = b_numerator // det
+
+    if a_pushes < 0 or b_pushes < 0:
+        return 0
+
+    if (
+        button_a.x * a_pushes + button_b.x * b_pushes == prize_location.x
+        and button_a.y * a_pushes + button_b.y * b_pushes == prize_location.y
+    ):
+        return (a_pushes * A_PUSH_COST) + (b_pushes * B_PUSH_COST)
 
     return 0
 
