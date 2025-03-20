@@ -18,11 +18,7 @@ Lines = list[str]
 
 
 def main(lines: Lines) -> None:
-    print(get_result(lines))
-
-
-def get_result(lines: Lines) -> int | str:
-    return 0
+    print(lines)
 
 
 if __name__ == "__main__":
