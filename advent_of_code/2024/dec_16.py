@@ -7,14 +7,14 @@ from advent_of_code.shared.utils import Direction, Position, run_solution
 
 Lines = list[str]
 
-CLOCKWISE_MAP: dict[Direction, Direction] = {
+CLOCKWISE_TURN_MAP: dict[Direction, Direction] = {
     Direction.UP: Direction.RIGHT,
     Direction.RIGHT: Direction.DOWN,
     Direction.DOWN: Direction.LEFT,
     Direction.LEFT: Direction.UP,
 }
 
-COUNTER_CLOCKWISE_MAP: dict[Direction, Direction] = {
+COUNTER_CLOCKWISE_TURN_MAP: dict[Direction, Direction] = {
     Direction.UP: Direction.LEFT,
     Direction.LEFT: Direction.DOWN,
     Direction.DOWN: Direction.RIGHT,
@@ -30,6 +30,7 @@ class Entity(Enum):
     WALL = "#"
     START = "S"
     END = "E"
+    BEST = "O"
 
 
 @dataclass
@@ -90,6 +91,7 @@ class Walker:
     score: int
     pos: Position
     direction: Direction
+    visited_positions: set[Position]
 
     def take_step(self) -> None:
         self.pos = self.pos + self.direction
@@ -97,55 +99,70 @@ class Walker:
 
     def split(self) -> "list[Walker]":
         return [
-            Walker(self.score, self.pos, self.direction),
-            Walker(self.score + ROTATION_COST, self.pos, CLOCKWISE_MAP[self.direction]),
-            Walker(self.score + ROTATION_COST, self.pos, COUNTER_CLOCKWISE_MAP[self.direction]),
+            Walker(self.score, self.pos, self.direction, self.visited_positions),
+            Walker(
+                self.score + ROTATION_COST,
+                self.pos,
+                CLOCKWISE_TURN_MAP[self.direction],
+                self.visited_positions.copy(),
+            ),
+            Walker(
+                self.score + ROTATION_COST,
+                self.pos,
+                COUNTER_CLOCKWISE_TURN_MAP[self.direction],
+                self.visited_positions.copy(),
+            ),
         ]
 
 
 def main(lines: Lines) -> None:
     grid = Grid.from_lines(lines)
+    visited_positions = {grid.start}
 
     initial_walkers = [
-        Walker(0, grid.start, Direction.RIGHT),
-        Walker(ROTATION_COST, grid.start, Direction.DOWN),
-        Walker(ROTATION_COST * 2, grid.start, Direction.LEFT),
-        Walker(ROTATION_COST, grid.start, Direction.UP),
+        Walker(ROTATION_COST * 0, grid.start, Direction.RIGHT, visited_positions),
+        Walker(ROTATION_COST * 1, grid.start, Direction.DOWN, visited_positions),
+        Walker(ROTATION_COST * 2, grid.start, Direction.LEFT, visited_positions),
+        Walker(ROTATION_COST * 1, grid.start, Direction.UP, visited_positions),
     ]
 
     koth_score = sys.maxsize
-
     queue = deque(initial_walkers)
-
     cost_map = defaultdict(lambda: sys.maxsize)
+    positions_on_best_paths = set()
 
     while queue:
         walker = queue.popleft()
 
         walker.take_step()
 
-        if walker.pos not in grid:
-            continue
-
         if grid.data[walker.pos] == Entity.WALL:
             continue
 
-        if cost_map[walker.pos] < walker.score:
+        if walker.score > cost_map[walker.pos] + ROTATION_COST:
             continue
 
         cost_map[walker.pos] = walker.score
-
-        if walker.score >= koth_score:
-            continue
+        walker.visited_positions.add(walker.pos)
 
         if walker.pos == grid.end:
-            koth_score = walker.score
+            if walker.score < koth_score:
+                koth_score = walker.score
+                positions_on_best_paths.clear()
+            elif walker.score > koth_score:
+                continue
 
+            positions_on_best_paths.update(walker.visited_positions)
             continue
 
         queue.extend(walker.split())
 
     print(koth_score)
+    assert koth_score in (11048, 130536)
+
+    # Result given is higher than the expected. Works for sample but not real.
+    # print(len(positions_on_best_paths))
+    # assert len(positions_on_best_paths) in (64, 0)
 
 
 if __name__ == "__main__":
