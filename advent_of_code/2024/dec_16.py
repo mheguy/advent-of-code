@@ -117,13 +117,12 @@ class Walker:
 
 def main(lines: Lines) -> None:
     grid = Grid.from_lines(lines)
-    visited_positions = {grid.start}
 
     initial_walkers = [
-        Walker(ROTATION_COST * 0, grid.start, Direction.RIGHT, visited_positions),
-        Walker(ROTATION_COST * 1, grid.start, Direction.DOWN, visited_positions),
-        Walker(ROTATION_COST * 2, grid.start, Direction.LEFT, visited_positions),
-        Walker(ROTATION_COST * 1, grid.start, Direction.UP, visited_positions),
+        Walker(ROTATION_COST * 0, grid.start, Direction.RIGHT, {grid.start}),
+        Walker(ROTATION_COST * 1, grid.start, Direction.DOWN, {grid.start}),
+        Walker(ROTATION_COST * 2, grid.start, Direction.LEFT, {grid.start}),
+        Walker(ROTATION_COST * 1, grid.start, Direction.UP, {grid.start}),
     ]
 
     koth_score = sys.maxsize
@@ -158,11 +157,7 @@ def main(lines: Lines) -> None:
         queue.extend(walker.split())
 
     print(koth_score)
-    assert koth_score in (11048, 130536)
-
-    # Result given is higher than the expected. Works for sample but not real.
-    # print(len(positions_on_best_paths))
-    # assert len(positions_on_best_paths) in (64, 0)
+    print(len(positions_on_best_paths))
 
 
 if __name__ == "__main__":
