@@ -8,6 +8,12 @@ from advent_of_code.shared.utils import Direction, Position, run_solution
 
 Lines = list[str]
 
+is_sample = True
+
+
+class NoSolutionError(Exception):
+    pass
+
 
 @dataclass(frozen=True)
 class EntityInfo:
@@ -145,7 +151,6 @@ def find_shortest_path_around_objects(start_position: Position, end_position: Po
     queue = deque(initial_walkers)
 
     while queue:
-        print(f"Active walkers: {len(queue)}       ", end="\r")
         walker = queue.popleft()
 
         if not walker.take_step(grid):
@@ -156,20 +161,41 @@ def find_shortest_path_around_objects(start_position: Position, end_position: Po
 
         queue.extend(walker.split())
 
-    print()
-
     if koth is None:
-        raise ValueError("No walker reached the end.")
+        raise NoSolutionError("No walker reached the end.")
 
     return koth
 
 
 def main(lines: Lines) -> None:
-    grid = Grid.from_lines(lines)
+    global is_sample  # noqa: PLW0603
+
+    if is_sample:
+        p1_length = 12
+        is_sample = False
+    else:
+        p1_length = 1024
+
+    grid = Grid.from_lines(lines[:p1_length])
     start_position = Position(0, 0)
     end_position = Position(grid.max_x, grid.max_y)
+
     walker = find_shortest_path_around_objects(start_position, end_position, grid)
-    print(walker.score)
+    print(f"p1 result: {walker.score}")
+
+    for text in lines[p1_length:]:
+        x, y = map(int, text.split(","))
+        grid.data[Position(x, y)] = Entity.WALL
+        grid.cost_map.clear()
+
+        try:
+            find_shortest_path_around_objects(start_position, end_position, grid)
+        except NoSolutionError:
+            break
+    else:
+        raise ValueError("Never failed")
+
+    print(f"p2 result: {text}")
 
 
 if __name__ == "__main__":
