@@ -6,7 +6,7 @@ Lines = list[str]
 
 TIME_SAVING_CUTOFF = 100
 
-POSSIBLE_CHEAT_MOVES = (
+P1_POSSIBLE_CHEAT_MOVES = (
     Position(-2, 0),
     Position(2, 0),
     Position(0, 2),
@@ -57,7 +57,6 @@ class Grid:
         if not start or not end:
             raise ValueError("Start or End missing.")
 
-        # Let's add the per-position info
         current_position = end
         next_position = None
         steps_from_end = 0
@@ -76,6 +75,24 @@ class Grid:
         return Grid(data=data, start=start, end=end)
 
 
+def get_p2_cheat_moves() -> dict[Position, int]:
+    move_radius = 20
+
+    moves: dict[Position, int] = {}
+    for left in range(move_radius + 1):
+        for right in range(move_radius - left + 1):
+            cost = left + right
+            for move in [
+                Position(left, right),
+                Position(left, -right),
+                Position(-left, right),
+                Position(-left, -right),
+            ]:
+                moves[move] = cost
+
+    return moves
+
+
 def get_previous_position(
     current_position: Position, next_position: Position | None, positions: set[Position]
 ) -> Position:
@@ -89,31 +106,34 @@ def get_previous_position(
 
 def main(lines: Lines) -> None:
     grid = Grid.from_lines(lines)
+    p2_cheat_moves = get_p2_cheat_moves()
 
-    cheats: list[int] = []
+    p1_result = 0
+    p2_result = 0
+
     current_position = grid.start
-    while True:
+    while current_position:
         current_position_info = grid.data[current_position]
 
-        for cheat_move in POSSIBLE_CHEAT_MOVES:
+        for cheat_move, cheat_cost in p2_cheat_moves.items():
             cheat_position = current_position + cheat_move
             if cheat_position in grid:
-                time_reduction = current_position_info.moves_to_end - grid.data[cheat_position].moves_to_end - 2
+                time_reduction = (
+                    current_position_info.moves_to_end - grid.data[cheat_position].moves_to_end - cheat_cost
+                )
 
-                if time_reduction > 0:
-                    cheats.append(time_reduction)
+                if time_reduction < TIME_SAVING_CUTOFF:
+                    continue
+
+                p2_result += 1
+
+                if cheat_move in P1_POSSIBLE_CHEAT_MOVES:
+                    p1_result += 1
 
         current_position = current_position_info.next_position
 
-        if not current_position:
-            break
-
-    result = 0
-    for cheat in cheats:
-        if cheat >= TIME_SAVING_CUTOFF:
-            result += 1
-
-    print(result)
+    print(p1_result)
+    print(p2_result)
 
 
 if __name__ == "__main__":
