@@ -47,6 +47,8 @@ class DirectionInfo:
 
 
 class Direction(Enum):
+    """Top-left corner is 0,0."""
+
     UP = DirectionInfo(Position(0, -1), "y", "UP")
     RIGHT = DirectionInfo(Position(1, 0), "x", "RIGHT")
     DOWN = DirectionInfo(Position(0, 1), "y", "DOWN")
