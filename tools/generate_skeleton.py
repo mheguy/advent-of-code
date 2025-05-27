@@ -96,7 +96,8 @@ def generate_example_input_file(sample_input_folder: Path, date: str, base_url: 
         else:
             print(f"ERROR: Invalid response when trying to obtain example input. Code: {response.status}")
             open_file(base_url)
-            open_file(sample_input_file)
+
+        open_file(sample_input_file)
 
 
 def generate_real_input_file(real_input_folder: Path, date: str, base_url: str) -> None:
